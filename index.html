@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة شغف التعليمية</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Tajawal) -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            300: '#7cc5fb',
+                            400: '#36a9f7',
+                            500: '#0c8de9',
+                            600: '#006ec7',
+                            700: '#0058a3',
+                            800: '#054b86',
+                            900: '#0a3f6f',
+                        }
+                    },
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f4f8fc;
+            color: #1e293b;
+        }
+        .tab-btn.active {
+            background-color: #0c8de9;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(12, 141, 233, 0.25);
+        }
+        .role-btn.active {
+            border-color: #0c8de9;
+            background-color: #e0effe;
+            color: #0058a3;
+        }
+        .filter-btn.active {
+            background-color: #0c8de9;
+            color: #ffffff;
+        }
+        /* Smooth transitions */
+        .transition-all-200 {
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 flex flex-col justify-between">
+
+    <!-- Header Navigation (Visually Hidden in Auth) -->
+    <header id="appHeader" class="hidden bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-brand-500/20">
+                    ش
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-slate-800 text-lg leading-none">شَغَفْ</h1>
+                    <span class="text-[10px] text-brand-600 font-semibold tracking-wider">طليعة الإبداع المدرسي</span>
+                </div>
+            </div>
+
+            <!-- User Info Badge & Actions -->
+            <div class="flex items-center gap-3">
+                <div id="userBadge" class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                    <div id="userAvatar" class="w-7 h-7 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-xs">
+                        ط
+                    </div>
+                    <div class="text-xs text-right">
+                        <div id="navUserName" class="font-bold text-slate-700">بسمة</div>
+                        <div id="navUserRole" class="text-[10px] text-slate-500">طالبة</div>
+                    </div>
+                </div>
+
+                <button onclick="logout()" title="تسجيل الخروج" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-500 transition-colors flex items-center justify-center">
+                    <i class="fa-solid font-bold fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6">
+
+        <!-- ==================== AUTH SECTION ==================== -->
+        <section id="authSection" class="max-w-md mx-auto my-6">
+            <!-- Brand Intro -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-white text-4xl font-extrabold shadow-xl shadow-brand-500/25 mb-4">
+                    شغف
+                </div>
+                <h2 class="text-2xl font-black text-slate-800">منصة شَغَفْ التعليمية</h2>
+                <p class="text-slate-500 text-sm mt-1">منصة الأنشطة والمسابقات المدرسية والتطوع</p>
+                
+                <div class="inline-flex items-center gap-1.5 mt-3 px-3 py-1 bg-brand-50 border border-brand-100 text-brand-700 text-xs rounded-full font-medium">
+                    <i class="fa-solid fa-heart text-rose-500"></i>
+                    <span>صاحب التطبيق: <strong>بسمة دان & بسمة بدماسي</strong></span>
+                </div>
+            </div>
+
+            <!-- Auth Form Card -->
+            <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-200/50 p-6">
+                <!-- Login / Register Switch Tabs -->
+                <div class="flex bg-slate-100 p-1 rounded-xl mb-6">
+                    <button id="loginTabBtn" onclick="setAuthMode('login')" class="tab-btn active flex-1 py-2 text-center text-sm font-bold rounded-lg transition-all">
+                        تسجيل الدخول
+                    </button>
+                    <button id="registerTabBtn" onclick="setAuthMode('register')" class="tab-btn flex-1 py-2 text-center text-sm font-bold text-slate-600 rounded-lg transition-all">
+                        إنشاء حساب جديد
+                    </button>
+                </div>
+
+                <!-- Role Selection -->
+                <div class="mb-5">
+                    <label class="block text-xs font-bold text-slate-600 mb-2">نوع الحساب:</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="roleStudentBtn" onclick="setRole('student')" class="role-btn active p-3 rounded-xl border border-slate-200 text-center flex flex-col items-center gap-1.5 transition-all">
+                            <i class="fa-solid fa-graduation-cap text-lg"></i>
+                            <span class="text-xs font-bold">طالبة</span>
+                        </button>
+                        <button id="roleTeacherBtn" onclick="setRole('teacher')" class="role-btn p-3 rounded-xl border border-slate-200 text-center flex flex-col items-center gap-1.5 transition-all text-slate-600">
+                            <i class="fa-solid fa-chalkboard-user text-lg"></i>
+                            <span class="text-xs font-bold">معلمة</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Form Fields -->
+                <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                    
+                    <!-- Dynamic Name Field (Registration Only) -->
+                    <div id="fullNameGroup" class="hidden">
+                        <label id="fullNameLabel" class="block text-xs font-bold text-slate-700 mb-1">اسم الطالبة الثلاثي</label>
+                        <input type="text" id="regFullName" placeholder="أدخلي اسمك الكامل" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100">
+                    </div>
+
+                    <!-- Dynamic Student Grade/Class Fields (Registration Only) -->
+                    <div id="studentClassGroup" class="hidden grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">الصف الدراسي</label>
+                            <select id="regGrade" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:border-brand-500">
+                                <option value="الأول ثانوي">الأول ثانوي</option>
+                                <option value="الثاني ثانوي">الثاني ثانوي</option>
+                                <option value="الثالث ثانوي">الثالث ثانوي</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">الفصل</label>
+                            <input type="text" id="regClassNum" placeholder="مثال: (3/1)" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500">
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Teacher Subject Field (Registration Only) -->
+                    <div id="teacherSubjectGroup" class="hidden">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">المادة / التخصص</label>
+                        <input type="text" id="regSubject" placeholder="مثال: الرياضيات، الحاسب" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500">
+                    </div>
+
+                    <!-- Username -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">اسم المستخدم</label>
+                        <input type="text" id="authUsername" required placeholder="أدخلي اسم المستخدم" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100">
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور</label>
+                        <input type="password" id="authPassword" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="authSubmitBtn" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-500/25 transition-all mt-2">
+                        تسجيل الدخول
+                    </button>
+                </form>
+            </div>
+        </section>
+
+
+        <!-- ==================== MAIN DASHBOARD SECTION ==================== -->
+        <section id="dashboardSection" class="hidden space-y-6">
+            
+            <!-- Banner / Hero Header -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-700 via-brand-600 to-brand-500 text-white p-6 shadow-xl shadow-brand-600/10">
+                <div class="relative z-10 max-w-xl">
+                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold mb-2">أهلاً بكِ في منصة شغف 👋</span>
+                    <h2 class="text-2xl font-black mb-2" id="heroWelcomeTitle">مرحباً بكِ في بيئة الإبداع المدرسي</h2>
+                    <p class="text-brand-100 text-xs md:text-sm leading-relaxed">شاركي في الأنشطة والمسابقات المدرسية، واكتسبي ساعات التطوع ونقاط السلوك المتميز بسهولة.</p>
+                </div>
+                <!-- Educational Decor Illustration -->
+                <div class="absolute -left-4 -bottom-10 opacity-20 pointer-events-none text-9xl">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 font-medium">الأنشطة المتاحة</div>
+                        <div id="statTotalActive" class="text-lg font-bold text-slate-800">0</div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 font-medium">مشاركاتكِ</div>
+                        <div id="statMyParticipations" class="text-lg font-bold text-slate-800">0</div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 font-medium">ساعات التطوع</div>
+                        <div id="statTotalHours" class="text-lg font-bold text-slate-800">0 ساعة</div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-500 font-medium">نقاط التميز</div>
+                        <div id="statTotalPoints" class="text-lg font-bold text-slate-800">0 نقطة</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teacher Action: Add New Activity Button -->
+            <div id="teacherControls" class="hidden flex justify-between items-center bg-white p-4 rounded-xl border border-brand-200">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm">إدارة الأنشطة والمسابقات المدرسية</h3>
+                    <p class="text-xs text-slate-500">يمكنكِ إضافة إعلان مسابقة جديد أو طلب مساعدة من الطالبات</p>
+                </div>
+                <button onclick="openNewActivityModal()" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i>
+                    إضافة إعلان / نشاط جديد
+                </button>
+            </div>
+
+            <!-- Featured Showcase: Top Participant of the Month -->
+            <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-amber-400 to-amber-200 flex items-center justify-center text-slate-800 text-2xl font-black shadow-md">
+                            👑
+                        </div>
+                    </div>
+                    <div>
+                        <div class="inline-block text-[10px] bg-amber-200/80 text-amber-900 font-extrabold px-2 py-0.5 rounded-full mb-1">
+                            🌟 الطالبة المتميزة لهذا الشهر
+                        </div>
+                        <h4 class="font-black text-slate-800 text-base" id="topParticipantName">سارة الخالد</h4>
+                        <p class="text-xs text-slate-600">الصف الثالث ثانوي - فصل (3/1) • أتمت 15 ساعة تطوعية</p>
+                    </div>
+                </div>
+                <span class="text-xs font-bold text-amber-800 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-amber-200">
+                    مثال متميز للإبداع والعطاء 👏
+                </span>
+            </div>
+
+            <!-- Announcements & Contests Filter Tabs -->
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-bullhorn text-brand-500"></i>
+                    الأنشطة والمسابقات المدرسية
+                </h3>
+
+                <!-- Filter Tabs -->
+                <div class="flex bg-slate-200/60 p-1 rounded-xl gap-1 text-xs font-bold">
+                    <button onclick="filterActivities('all')" id="filterAll" class="filter-btn active px-3 py-1.5 rounded-lg transition-all">الكل</button>
+                    <button onclick="filterActivities('active')" id="filterActive" class="filter-btn px-3 py-1.5 rounded-lg text-slate-600 transition-all">الجديدة ⚡</button>
+                    <button onclick="filterActivities('expired')" id="filterExpired" class="filter-btn px-3 py-1.5 rounded-lg text-slate-600 transition-all">المنتهية 🔒</button>
+                </div>
+            </div>
+
+            <!-- Activities Grid -->
+            <div id="activitiesGrid" class="grid md:grid-cols-2 gap-5">
+                <!-- Dynamic Content Will Render Here -->
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-10">
+        <p>© 2026 منصة <strong>شغف</strong> المدرسية • تطبيق خاص بالطالبات والمعلمات</p>
+        <p class="text-[11px] text-slate-400 mt-1">إعداد وتطوير: <strong>بسمة دان & بسمة بدماسي</strong></p>
+    </footer>
+
+    <!-- ==================== MODAL: ADD NEW ACTIVITY (TEACHER) ==================== -->
+    <div id="newActivityModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-5 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-base">إضافة إعلان مسابقة / طلب مشاركة</h3>
+                <button onclick="closeNewActivityModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <!-- Modal Form -->
+            <form onsubmit="handleCreateActivity(event)" class="p-5 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">عنوان النشاط / المسابقة</label>
+                    <input type="text" id="actTitle" required placeholder="مثال: مسابقة رحلة وطن للرسم الرقمي" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:border-brand-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">الوصف التفصيلي</label>
+                    <textarea id="actDesc" rows="3" required placeholder="اكتبي تفاصيل المسابقة والشروط والمطلوب هنا..." class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:border-brand-500 focus:outline-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slat
